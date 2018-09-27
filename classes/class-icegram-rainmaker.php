@@ -82,7 +82,7 @@ if ( !class_exists( 'Rainmaker' ) ) {
 
 			//star rating
 			add_action( 'admin_notices', array( &$this,'add_admin_notices'));
-			add_action( 'admin_init', array( &$this, 'dismiss_admin_notice' ) );
+			add_action( 'admin_init', array( &$this, 'rm_dismiss_admin_notice_star' ) );
 		}
 
 		function rm_custom_search_query( $query ){
@@ -159,7 +159,7 @@ if ( !class_exists( 'Rainmaker' ) ) {
 			if (($total_forms_publish >= 1 || $total_forms_draft >= 1 || $total_rainmaker_leads_publish >=1 || $total_rainmaker_leads_draft >=1) && $rm_star_review != 'no' ) {
 				$key = array_rand($rm_rating_text);
 				$rm_rating_text = $rm_rating_text[$key]; 
-				echo '<div class="notice notice-warning" style="background-color: #FFF;"><p style="letter-spacing: 0.6px;">' . $rm_rating_text . ' <a style="float:right" class="rm-admin-btn rm-admin-btn-secondary" href="?dismiss_admin_notice=1&option_name=rm_star_review">' . __( 'No, I don\'t like it', true ) . '</a></p></div>';
+				echo '<div class="notice notice-warning" style="background-color: #FFF;"><p style="letter-spacing: 0.6px;">' . $rm_rating_text . ' <a style="float:right" class="rm-admin-btn rm-admin-btn-secondary" href="?rm_dismiss_admin_notice_star=1&option_name=rm_star_review">' . __( 'No, I don\'t like it', true ) . '</a></p></div>';
 			}
 		}
 	
@@ -218,9 +218,9 @@ if ( !class_exists( 'Rainmaker' ) ) {
 			}
 			
 		// Function to dismiss any admin notice
-		public static function dismiss_admin_notice() {
+		public static function rm_dismiss_admin_notice_star() {
 	
-			if ( isset( $_GET['dismiss_admin_notice'] ) && $_GET['dismiss_admin_notice'] == '1' && isset( $_GET['option_name'] ) ) {
+			if ( isset( $_GET['rm_dismiss_admin_notice_star'] ) && $_GET['rm_dismiss_admin_notice_star'] == '1' && isset( $_GET['option_name'] ) ) {
 				$option_name = sanitize_text_field( $_GET['option_name'] );
 				update_option( $option_name . '_rainmaker', 'no' );
 	
