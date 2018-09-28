@@ -73,7 +73,7 @@ if ( !class_exists( 'Rainmaker' ) ) {
 		        add_action( 'wp_ajax_nopriv_rm_rainmaker_add_lead', array( &$this, 'rm_rainmaker_add_lead' ) );
 		    }
 		    if(is_admin()){
-		    	require_once( 'mailers/config.php' );
+		    	require_once('mailers/config.php');
 		    }
 		    
 
