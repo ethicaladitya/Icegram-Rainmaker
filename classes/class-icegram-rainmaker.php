@@ -10,7 +10,7 @@ if ( !class_exists( 'Rainmaker' ) ) {
 		function __construct() {
 		    $this->plugin_url   = untrailingslashit( plugins_url( '/', __FILE__ ) ) .'/';
 		    $this->plugin_path  = untrailingslashit( plugin_dir_path( __FILE__ ) );
-		    $this->version = "0.33";
+		    $this->version = "0.35";
 		    //welcome
 		    add_action( 'admin_init', array( &$this, 'welcome' ) );
 			add_action( 'init', array( &$this, 'register_rainmaker_form_post_type' ) );
@@ -73,21 +73,17 @@ if ( !class_exists( 'Rainmaker' ) ) {
 		        add_action( 'wp_ajax_nopriv_rm_rainmaker_add_lead', array( &$this, 'rm_rainmaker_add_lead' ) );
 		    }
 		    if(is_admin()){
-		    	require_once('mailers/config.php');
+		    	require_once( 'mailers/config.php' );
 		    }
 		    
 
 		    add_action( 'admin_notices', array( &$this,'rm_add_admin_notices'));
-			add_action( 'admin_init', array( &$this, 'rm_dismiss_admin_notice' ) );
-
-			//star rating
-			add_action( 'admin_notices', array( &$this,'add_admin_notices'));
-			add_action( 'admin_init', array( &$this, 'rm_dismiss_admin_notice_star' ) );
+		    add_action( 'admin_init', array( &$this, 'rm_dismiss_admin_notice' ) );
 		}
 
 		function rm_custom_search_query( $query ){
 
-			 if (  is_admin() && $query->query['post_type'] == 'rainmaker_lead' && $query->is_search  ) {
+			 if (  is_admin() && (!empty($query->query['post_type']) && $query->query['post_type'] === 'rainmaker_lead') && $query->is_search()  ) {
 		          $query->set('meta_query', array(
 		          	    'relation' => 'OR',
 		                array(
@@ -102,28 +98,31 @@ if ( !class_exists( 'Rainmaker' ) ) {
 		                )
 
 		          ));
-		     }
-		    return;
+		    }
+		    return $query;
 
 		}
+
 		function rm_custom_search_query_string( $search, $wp_query ){
-			if( is_admin() && $wp_query->query['post_type'] == 'rainmaker_lead' && $wp_query->is_search){
+			global $wpdb;
+			if( is_admin() && !empty($wp_query->query['post_type']) &&  $wp_query->query['post_type'] === 'rainmaker_lead' && $wp_query->is_search){
 				$search = "AND ( 
-							  ( wp_postmeta.meta_key = 'email' AND wp_postmeta.meta_value LIKE '%".$wp_query->query['s']."%' ) 
+							  ( $wpdb->postmeta.meta_key = 'email' AND $wpdb->postmeta.meta_value LIKE '%".$wp_query->query['s']."%' ) 
 							  OR 
-							  ( wp_postmeta.meta_key = 'name' AND wp_postmeta.meta_value LIKE '%".$wp_query->query['s']."%' )
+							  ( $wpdb->postmeta.meta_key = 'name' AND $wpdb->postmeta.meta_value LIKE '%".$wp_query->query['s']."%' )
 							) AND wp_posts.post_type = 'rainmaker_lead' ";
-				
+
 			}
 		    return $search;
 		}
+
 		function welcome(){
 			if ( false === get_option( '_icegram_rm_activation_redirect' ) )
             return;
 	        // Delete the redirect transient
 	        delete_option( '_icegram_rm_activation_redirect' );
 	        $this->import_sample_data();
-	        wp_redirect( admin_url( 'edit.php?post_type=rainmaker_form' ) );
+	        wp_safe_redirect( admin_url( 'edit.php?post_type=rainmaker_form' ) );
 	        exit;
 		}
 
@@ -140,104 +139,15 @@ if ( !class_exists( 'Rainmaker' ) ) {
 
         public function rm_upgrade_screen() {        
             include ( 'addons.php' );
-		}
-		
-		public function add_admin_notices() {        
-			$screen = get_current_screen(); 
-			if ( !in_array( $screen->id, array( 'edit-rainmaker_form', 'rainmaker_form','edit-rainmaker_lead','rainmaker_form_page_icegram-rainmaker-support', 'rainmaker_form_page_icegram-rainmaker-upgrade' ), true ) ) return;
-			$total_forms = wp_count_posts('rainmaker_form');
-			$total_forms_publish = $total_forms->publish;
-			$total_forms_draft = $total_forms->draft;
-			$total_rainmaker_leads = wp_count_posts('rainmaker_lead');
-			$total_rainmaker_leads_publish = $total_rainmaker_leads->publish;
-			$total_rainmaker_leads_draft = $total_rainmaker_leads->draft;
-			$rm_star_review = get_option( 'rm_star_review_rainmaker' );
-			$rm_rating_text = array();
-			$rm_rating_text['star_review'] = __( 'If you like <strong>Rainmaker</strong>, please consider leaving us a <a target="_blank" href="https://wordpress.org/support/plugin/icegram-rainmaker/reviews/?filter=5#new-post">&#9733;&#9733;&#9733;&#9733;&#9733;</a> rating. A huge thank you from the team in advance!', true );
-			$rm_rating_text['help_review'] = __( 'If you like <strong>Rainmaker</strong>, tell us more about your experience and leave us <a target="_blank" href="https://wordpress.org/support/plugin/icegram-rainmaker/reviews/?filter=5#new-post">&#9733;&#9733;&#9733;&#9733;&#9733;</a> rating. A huge thank you from the team in advance!', true );
-			
-			if (($total_forms_publish >= 1 || $total_forms_draft >= 1 || $total_rainmaker_leads_publish >=1 || $total_rainmaker_leads_draft >=1) && $rm_star_review != 'no' ) {
-				$key = array_rand($rm_rating_text);
-				$rm_rating_text = $rm_rating_text[$key]; 
-				echo '<div class="notice notice-warning" style="background-color: #FFF;"><p style="letter-spacing: 0.6px;">' . $rm_rating_text . ' <a style="float:right" class="rm-admin-btn rm-admin-btn-secondary" href="?rm_dismiss_admin_notice_star=1&option_name=rm_star_review">' . __( 'No, I don\'t like it', true ) . '</a></p></div>';
-			}
-		}
-	
-		public static function rm_submit_survey() {
-	
-			$url = 'https://www.icegram.com/wp-admin/admin-ajax.php';
-	
-			if ( ! empty( $_POST ) ) {
-	
-				if ( ! empty( $_POST['btn-val'] ) ) {
-	
-					if ( 'cancel' === $_POST['btn-val'] ) {
-						update_option( 'ig_rm_survey_for_problems_cancelled', true );
-						exit();
-					} elseif ( 'no' === $_POST['btn-val'] ) {
-						unset( $_POST['rm_email'] );
-					}
-				}
-	
-				$params           = $_POST;
-				$params['domain'] = home_url();
-	
-				$method = 'POST';
-				$qs     = http_build_query( $params );
-	
-				$options = array(
-					'timeout' => 15,
-					'method'  => $method
-				);
-	
-				if ( $method == 'POST' ) {
-					$options['body'] = $qs;
-				} else {
-					if ( strpos( $url, '?' ) !== false ) {
-						$url .= '&' . $qs;
-					} else {
-						$url .= '?' . $qs;
-					}
-				}
-	
-				$response = wp_remote_request( $url, $options );
-	
-				if ( wp_remote_retrieve_response_code( $response ) == 200 ) {
-					$data = json_decode( $response['body'], true );
-	
-					if ( empty( $data['error'] ) ) {
-						if ( ! empty( $data ) && ! empty( $data['success'] ) ) {
-							update_option( 'rm_survey_for_problems_done', true );
-						}
-						echo( json_encode( $data ) );
-					}
-				}
-			}
-	
-			exit();
-			}
-			
-		// Function to dismiss any admin notice
-		public static function rm_dismiss_admin_notice_star() {
-	
-			if ( isset( $_GET['rm_dismiss_admin_notice_star'] ) && $_GET['rm_dismiss_admin_notice_star'] == '1' && isset( $_GET['option_name'] ) ) {
-				$option_name = sanitize_text_field( $_GET['option_name'] );
-				update_option( $option_name . '_rainmaker', 'no' );
-	
-				$referer = wp_get_referer();
-				wp_safe_redirect( $referer );
-				exit();
-	
-			}
-		}
+        }
 
         public function rm_add_admin_notices() {        
             $screen = get_current_screen(); 
 	        if ( !in_array( $screen->id, array( 'edit-rainmaker_form', 'rainmaker_form','edit-rainmaker_lead','rainmaker_form_page_icegram-rainmaker-support', 'rainmaker_form_page_icegram-rainmaker-upgrade' ), true ) ) return;
 	        $timezone_format = _x('Y-m-d', 'timezone date format');
 	        $ig_current_date = strtotime(date_i18n($timezone_format));
-	        $ig_offer_start = strtotime("2017-12-18");
-	        $ig_offer_end = strtotime("2017-12-26");
+	        $ig_offer_start = strtotime("2018-10-30");
+	        $ig_offer_end = strtotime("2018-11-2");
 	        if(($ig_current_date >= $ig_offer_start) && ($ig_current_date <= $ig_offer_end)) {
 	        	include_once('rm-offer.php');
 	        }
@@ -247,7 +157,7 @@ if ( !class_exists( 'Rainmaker' ) ) {
         	if(isset($_GET['rm_dismiss_admin_notice']) && $_GET['rm_dismiss_admin_notice'] == '1' && isset($_GET['rm_option_name'])){
 	            $option_name = sanitize_text_field($_GET['rm_option_name']);
 	            update_option($option_name.'_icegram', true);
-	            header("Location: https://www.icegram.com/?utm_source=in_app&utm_medium=rm_banner&utm_campaign=bfcm2017_revised");
+	            header("Location: https://www.icegram.com/latest-valid-coupons-discounts-offers-deals/?utm_source=in_app&utm_medium=rm_banner&utm_campaign=halloween_2018");
 	            exit();
 	        }
 	    }

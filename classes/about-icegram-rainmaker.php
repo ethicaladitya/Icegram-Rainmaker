@@ -11,11 +11,11 @@ add_action( 'admin_footer', 'rm_support_ticket_content' );
 function rm_support_ticket_content() {
     global $current_user, $pagenow, $typenow, $rainmaker;
     $headers = '';
-    if ( $pagenow != 'edit.php' ) return;
-    if ( $typenow != 'rainmaker_form') return;
+    if ( $pagenow !== 'edit.php' ) return;
+    if ( $typenow !== 'rainmaker_form') return;
     if ( !( $current_user instanceof WP_User ) || !current_user_can( 'manage_options' )) return;
 
-    if( isset( $_POST['submit_query'] ) && $_POST['submit_query'] == "Send" && !empty($_POST['client_email'])){
+    if( isset( $_POST['submit_query'] ) && $_POST['submit_query'] === "Send" && !empty($_POST['client_email'])){
         check_admin_referer( 'rm-submit-query' );
         $additional_info = ( isset( $_POST['additional_information'] ) && !empty( $_POST['additional_information'] ) ) ? sanitize_text_field( $_POST['additional_information'] ) : '';
         $additional_info = str_replace( '###', '<br />', $additional_info );
