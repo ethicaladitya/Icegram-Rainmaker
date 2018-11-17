@@ -1,4 +1,4 @@
-.rm-deactivate-survey-modal {
+.deactivate-survey-modal {
   display: none;
   table-layout: fixed;
   position: fixed;
@@ -11,12 +11,12 @@
   left: 0;
   background: rgba(0,0,0,0.8);
 }
-.rm-deactivate-survey-wrap {
+.deactivate-survey-wrap {
   display: table-cell;
   vertical-align: middle;
 }
 
-.rm-deactivate-survey {
+.deactivate-survey {
   background-color: #f1f1f1;
   border: 0 solid #ccc;
   border-radius: 3px;
@@ -26,11 +26,11 @@
   direction: ltr;
 }
 
-.rm-deactivate-survey a.button {
+.deactivate-survey a.button {
   white-space: normal;
   height: auto;
 }
 
-#rm-deactivate-survey-close{
+#deactivate-survey-close{
 	margin-top: 10px;
 }

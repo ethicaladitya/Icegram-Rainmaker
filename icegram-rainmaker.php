@@ -36,9 +36,17 @@ require_once $plugin_dir_path.'../deactivationSurvey/DeactivationSurvey.php';
 
 load_plugin_textdomain( 'icegram-rainmaker', false, dirname( plugin_basename( __FILE__ ) ) . '/deactivationSurvey/' ); 
 add_action( 'plugins_loaded', 'setupDeactivationSurvey' );
-function setupDeactivationSurvey() {
-    $survey = new deactivationSurvey();
-    $survey->init();
-  }
 
-  
+function setupDeactivationSurvey() {
+
+	if ( ! class_exists( 'deactivationSurvey' ) ) {
+			require_once 'deactivationSurvey/DeactivationSurvey.php';
+	}
+
+	$slug               = 'icegram-rainmaker';
+    $link_js_file       = 'https://secure.polldaddy.com/p/10143671.js';
+    $link_form          = 'https://poll.fm/10143671'
+
+    $survey = new deactivationSurvey( $slug, $link_js_file, $link_form );
+    $survey->init();
+}
