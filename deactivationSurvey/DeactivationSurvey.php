@@ -43,7 +43,7 @@ class DeactivationSurvey {
    public function css() {
      if(!$this->shouldShow()) {
        return;
-     }
+     } 
      wp_register_style( 'survey_css', $this->plugin_url.'css.css');
      wp_enqueue_style( 'survey_css' );
    }
