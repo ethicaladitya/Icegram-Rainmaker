@@ -1,7 +1,8 @@
 console.log('in js');
 jQuery(function(){
 console.log('in js12');
-  var deactivateLink = jQuery('#the-list').find('[data-slug="icegram-rainmaker"] span.deactivate a');
+  var mydata = {"slug":slug};    
+  var deactivateLink = jQuery('#the-list').find('[data-slug=slug] span.deactivate a');
   var overlay = jQuery('#deactivate-survey');
   var closeButton = jQuery('#deactivate-survey-close');
   var formOpen = false;

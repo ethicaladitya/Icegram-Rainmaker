@@ -35,7 +35,7 @@ class DeactivationSurvey {
     if(!$this->shouldShow()) {
        return;
      }
-    wp_register_script( 'survey_js', $this->plugin_url . 'js.js' );
+    wp_register_script( 'survey_js', $this->plugin_url . 'js.js',  );
     wp_enqueue_script( 'survey_js' );
    }
 
@@ -57,7 +57,7 @@ class DeactivationSurvey {
       <div class="deactivate-survey-wrap">
         <div class="deactivate-survey">
   
-     <center><script type="text/javascript" charset="utf-8" src="<?php echo "$this->  link_js_file"; ?> "></script>
+     <center><script type="text/javascript" charset="utf-8" src="<?php echo $this->link_js_file; ?> "></script>
      <noscript><a href="<?php echo "$this->link_form"; ?>">Why are you deactivating Email Subscribers</a></noscript></center>
   
         <a class="button" id="deactivate-survey-close">Close this window and deactivate Email Subscribers &rarr;</a>
