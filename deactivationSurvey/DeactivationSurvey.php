@@ -1,17 +1,10 @@
 <?php
 
 class DeactivationSurvey {
- 
-  var $link_form;
-  var $link_js_file;
-  var $slug;
+  
+  var $link_form       = 'https://poll.fm/10143671';
+  var $link_js_file    = 'https://secure.polldaddy.com/p/10143671.js';
 
-  function __construct( $slug, $link_js_file, $link_form ) {
-
-    $this->link_js_file        = $link_js_file;
-    $this->link_form           = $link_form;
-    $this->slug                = $slug;
-  }
   public function init() {
 
     $this->plugin_url   = untrailingslashit( plugins_url( '/', __FILE__ ) ) .'/';
@@ -35,7 +28,7 @@ class DeactivationSurvey {
     if(!$this->shouldShow()) {
        return;
      }
-    wp_register_script( 'survey_js', $this->plugin_url . 'js.js',  );
+    wp_register_script( 'survey_js', $this->plugin_url . 'survey.js' );
     wp_enqueue_script( 'survey_js' );
    }
 
@@ -44,7 +37,7 @@ class DeactivationSurvey {
      if(!$this->shouldShow()) {
        return;
      } 
-     wp_register_style( 'survey_css', $this->plugin_url.'css.css');
+     wp_register_style( 'survey_css', $this->plugin_url.'survey.css');
      wp_enqueue_style( 'survey_css' );
    }
 
