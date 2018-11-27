@@ -1,12 +1,13 @@
 <?php
 
+  $link_form       = 'https://poll.fm/10143671';
+  $link_js_file    = 'https://secure.polldaddy.com/p/10143671.js';
+  $slug            = 'icegram-rainmaker';
+
+  if (! class_exists( 'DeactivationSurvey' )) {
 class DeactivationSurvey {
-  
-  var $link_form       = 'https://poll.fm/10143671';
-  var $link_js_file    = 'https://secure.polldaddy.com/p/10143671.js';
 
   public function init() {
-
     $this->plugin_url   = untrailingslashit( plugins_url( '/', __FILE__ ) ) .'/';
     add_action('admin_print_scripts', array($this, 'js'), 20);
     add_action('admin_print_scripts', array($this, 'css'));
@@ -29,7 +30,8 @@ class DeactivationSurvey {
        return;
      }
     wp_register_script( 'survey_js', $this->plugin_url . 'survey.js' );
-    wp_enqueue_script( 'survey_js' );
+    $data = array('slug' => "$this->slug");
+    wp_enqueue_script( 'survey_js', 'arg', $data );
    }
 
 
@@ -59,5 +61,9 @@ class DeactivationSurvey {
     </div>
   <?php
       }
+}}
+if(class_exists('DeactivationSurvey')){
+  $stefan = new DeactivationSurvey();
+  $stefan->init();
 }
 ?>
