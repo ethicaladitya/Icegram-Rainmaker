@@ -32,7 +32,6 @@ add_action( 'plugins_loaded', 'initialize_icegram_rainmaker' );
 register_activation_hook( __FILE__,  'install_icegram_rainmaker');
 
 add_action( 'plugins_loaded', 'es_setupDeactivationSurvey' );
-
 function es_setupDeactivationSurvey() {
     $plugin_dir_path = dirname(__FILE__);
 	if ( ! class_exists( 'deactivationSurvey' ) ) {
