@@ -31,16 +31,19 @@ function install_icegram_rainmaker(){
 add_action( 'plugins_loaded', 'initialize_icegram_rainmaker' );
 register_activation_hook( __FILE__,  'install_icegram_rainmaker');
 
-add_action( 'plugins_loaded', 'setupDeactivationSurvey' );
-$plugin_dir_path = dirname(__FILE__);
-if (! function_exists( 'setupDeactivationSurvey' )) {
-function setupDeactivationSurvey() {
-    require_once $plugin_dir_path.'/deactivationSurvey/DeactivationSurvey.php'; 
-    $survey = new deactivationSurvey();
+add_action( 'plugins_loaded', 'es_setupDeactivationSurvey' );
+
+function es_setupDeactivationSurvey() {
+    $plugin_dir_path = dirname(__FILE__);
+	if ( ! class_exists( 'deactivationSurvey' ) ) {
+        require_once $plugin_dir_path.'/deactivationSurvey/DeactivationSurvey.php';
+	}
+
+    $link_form       = 'https://poll.fm/10143671';
+    $link_js_file    = 'https://secure.polldaddy.com/p/10143671.js';
+    $slug            = 'icegram-rainmaker';
+
+    $survey = new deactivationSurvey($link_form, $link_js_file, $slug);
     $survey->init();
-}}
-if (function_exists( 'setupDeactivationSurvey' )) {
-    require_once $plugin_dir_path.'/deactivationSurvey/DeactivationSurvey.php'; 
-    $survey = new deactivationSurvey();
-    $survey->init();
+
 }

@@ -1,11 +1,12 @@
 <?php
 
-  $link_form       = 'https://poll.fm/10143671';
-  $link_js_file    = 'https://secure.polldaddy.com/p/10143671.js';
-  $slug            = 'icegram-rainmaker';
-
-  if (! class_exists( 'DeactivationSurvey' )) {
 class DeactivationSurvey {
+
+  function __construct( $link_form, $link_form_js, $slug ) {			
+		$this->link_form           = $link_form;
+		$this->link_js_file        = $link_form_js;
+		$this->slug                = $slug;
+		}
 
   public function init() {
     $this->plugin_url   = untrailingslashit( plugins_url( '/', __FILE__ ) ) .'/';
@@ -61,9 +62,5 @@ class DeactivationSurvey {
     </div>
   <?php
       }
-}}
-if(class_exists('DeactivationSurvey')){
-  $stefan = new DeactivationSurvey();
-  $stefan->init();
 }
 ?>
