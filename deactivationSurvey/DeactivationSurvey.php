@@ -5,11 +5,11 @@ class DeactivationSurvey {
   function __construct( $link_form, $link_form_js, $slug ) {			
 		$this->link_form           = $link_form;
 		$this->link_js_file        = $link_form_js;
-		$this->slug                = $slug;
+    $this->slug                = $slug;
+    $this->plugin_url          = untrailingslashit( plugins_url( '/', __FILE__ ) ) .'/';
 		}
 
   public function init() {
-    $this->plugin_url   = untrailingslashit( plugins_url( '/', __FILE__ ) ) .'/';
     add_action('admin_print_scripts', array($this, 'js'), 20);
     add_action('admin_print_scripts', array($this, 'css'));
     add_action('admin_footer', array($this, 'modal'));
@@ -31,8 +31,12 @@ class DeactivationSurvey {
        return;
      }
     wp_register_script( 'survey_js', $this->plugin_url . 'survey.js' );
-    $data = array('slug' => "$this->slug");
-    wp_enqueue_script( 'survey_js', 'arg', $data );
+    wp_enqueue_script( 'survey_js');
+ 
+$data = array(
+    'slug'            => $this->slug
+);
+wp_localize_script( 'survey_js', 'php_vars', $data );
    }
 
 
