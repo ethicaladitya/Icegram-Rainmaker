@@ -42,7 +42,5 @@ function rm_setupDeactivationSurvey() {
     $link_js_file    = 'https://secure.polldaddy.com/p/10143671.js';
     $slug            = 'icegram-rainmaker';
 
-    $survey = new deactivationSurvey($link_form, $link_js_file, $slug);
-    $survey->init();
-
+    new deactivationSurvey($link_form, $link_js_file, $slug);
 }
