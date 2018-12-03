@@ -3,10 +3,11 @@
 class DeactivationSurvey {
 
   function __construct( $link_form, $link_form_js, $slug ) {			
-		$this->link_form           = $link_form;
-		$this->link_js_file        = $link_form_js;
-    $this->slug                = $slug;
-    $this->plugin_url          = untrailingslashit( plugins_url( '/', __FILE__ ) ) .'/';
+		$this->link_form              = $link_form;
+		$this->link_js_file           = $link_form_js;
+    $this->slug                   = $slug;
+    $ig_deactivation_slugs[$slug] = $slug;
+    $this->plugin_url             = untrailingslashit( plugins_url( '/', __FILE__ ) ) .'/';
     $this->init();
 		}
 
@@ -28,15 +29,13 @@ class DeactivationSurvey {
   }
 
    public function js() {
+    global $ig_deactivation_slugs;
     if(!$this->shouldShow()) {
        return;
      }
     wp_register_script( 'survey_js', $this->plugin_url . 'survey.js' );
     wp_enqueue_script( 'survey_js');
-    $data = array(
-    'slug'            => $this->slug
-    );
-    wp_localize_script( 'survey_js', 'php_vars', $data );
+    wp_localize_script( 'survey_js', 'data', $ig_deactivation_slugs );
     }
 
    public function css() {
