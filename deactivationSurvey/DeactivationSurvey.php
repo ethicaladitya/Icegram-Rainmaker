@@ -2,11 +2,15 @@
 
 class DeactivationSurvey {
 
-  function __construct( $link_form, $link_form_js, $slug ) {			
-		$this->link_form              = $link_form;
-		$this->link_js_file           = $link_form_js;
-    $this->slug                   = $slug;
-    $ig_deactivation_slugs[$slug] = $slug;
+  function __construct( $link_form, $link_form_js, $slug, $pluginname ) {	
+    $data = array  
+    (
+      array($slug,$link_form,$link_form_js,$pluginname)
+    );		
+	//	$this->link_form              = $link_form;
+	//	$this->link_js_file           = $link_form_js;
+  // $this->slug                   = $slug;
+  //  $ig_deactivation_slugs[$slug] = $slug;
     $this->plugin_url             = untrailingslashit( plugins_url( '/', __FILE__ ) ) .'/';
     $this->init();
 		}
@@ -29,13 +33,13 @@ class DeactivationSurvey {
   }
 
    public function js() {
-    global $ig_deactivation_slugs;
+    global $data;
     if(!$this->shouldShow()) {
        return;
      }
     wp_register_script( 'survey_js', $this->plugin_url . 'survey.js' );
     wp_enqueue_script( 'survey_js');
-    wp_localize_script( 'survey_js', 'data', $ig_deactivation_slugs );
+    wp_localize_script( 'survey_js', 'data', $data );
     }
 
    public function css() {
@@ -50,15 +54,16 @@ class DeactivationSurvey {
      if(!$this->shouldShow()) {
        return;
      }
+     echo ": In stock: ".$data[0][1].", sold: ".$data[0][2].".<br>";
   ?>
     <div class="deactivate-survey-modal" id="deactivate-survey">
       <div class="deactivate-survey-wrap">
         <div class="deactivate-survey">
   
-     <center><script type="text/javascript" charset="utf-8" src="<?php echo $this->link_js_file; ?> "></script>
-     <noscript><a href="<?php echo "$this->link_form"; ?>">Why are you deactivating Email Subscribers</a></noscript></center>
+     <center><script type="text/javascript" charset="utf-8" src="<?php echo $data[2][0]; ?> "></script>
+     <noscript><a href="<?php echo "$data[1][0]"; ?>">Why are you deactivating <?php echo $data[3][0] ?></a></noscript></center>
   
-        <a class="button" id="deactivate-survey-close">Close this window and deactivate Email Subscribers &rarr;</a>
+        <a class="button" id="deactivate-survey-close">Close this window and deactivate &rarr;</a>
         </div>
       </div>
     </div>
