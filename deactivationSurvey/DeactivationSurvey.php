@@ -2,17 +2,10 @@
 
 class DeactivationSurvey {
 
-<<<<<<< HEAD
   function __construct( $link_form, $link_form_js, $slug, $pluginname ) {	
     $data = array  
     (
       array($slug,$link_form,$link_form_js,$pluginname)
-=======
-  function __construct( $link_form, $link_form_js, $slug ) {	
-    $data = array  
-    (
-      array($slug,$link_form,$link_form_js)
->>>>>>> 2a00ef72f077d9a2c175c577012949211c1df2fa
     );		
 	//	$this->link_form              = $link_form;
 	//	$this->link_js_file           = $link_form_js;
