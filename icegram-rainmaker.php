@@ -40,7 +40,7 @@ function rm_setupDeactivationSurvey() {
 	}
 
     $link_form       = 'https://poll.fm/10178602';
-    $link_js_file    = 'https://secure.polldaddy.com/p/10178602.js';
+    $link_form_js    = 'https://secure.polldaddy.com/p/10178602.js';
     $slug            = 'icegram-rainmaker';
 	$script			 = '<script type="text/javascript" charset="utf-8" src="https://secure.polldaddy.com/p/10178602.js"></script><noscript><a href="https://poll.fm/10178602">Why are you deactivating Rainmaker </a></noscript>';
 	$plugin_name	 = 'Icegram Rainmaker';
