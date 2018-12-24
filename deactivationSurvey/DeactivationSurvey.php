@@ -2,11 +2,13 @@
 
 class DeactivationSurvey {
 
-  function __construct( $link_form, $link_form_js, $slug ) {
+  function __construct($script, $link_form, $link_form_js, $slug, $plugin_name) {
     global $ig_deactivation_data;
-		$this->link_form           = $link_form;
-		$this->link_js_file        = $link_form_js;
-		$this->slug                = $slug;
+    $this->script              = $script;
+	$this->link_form     	   = $link_form;
+    $this->link_js_file        = $link_form_js;
+    $this->slug                = $slug;
+    $this->plugin_name         = $plugin_name;
     $ig_deactivation_data[$slug] = array(
                                           'link_form' => $link_form,
                                           'link_form_js' => $link_form_js,
@@ -39,7 +41,7 @@ class DeactivationSurvey {
      }
     wp_register_script( 'survey_js', $this->plugin_url . 'survey.js' );
     wp_enqueue_script( 'survey_js');
-    wp_localize_script( 'survey_js',  'ig_deactivation_data', $ig_deactivation_data);
+    wp_localize_script( 'survey_js',  'ig_deactivation_data', $slug);
    }
 
 
@@ -56,22 +58,20 @@ class DeactivationSurvey {
      if(!$this->shouldShow()) {
        return;
      }
-     foreach($ig_deactivation_data as $slug => $data) {
      
         ?>
           <div class="deactivate-survey-modal" id="deactivate-survey">
             <div class="deactivate-survey-wrap">
               <div class="deactivate-survey">
         
-           <center><script type="text/javascript" charset="utf-8" src="<?php echo $data['link_form_js']; ?> "></script>
-           <noscript><a href="<?php echo $data['link_form']; ?>">Why are you deactivating Email Subscribers</a></noscript></center>
+           <center><?php echo $this->script; ?></center>
         
-              <a class="button" id="deactivate-survey-close">Close this window and deactivate Email Subscribers &rarr;</a>
+              <a class="button" id="deactivate-survey-close">Close this window and deactivate <?php echo $this->plugin_name; ?> &rarr;</a>
               </div>
             </div>
           </div>
         <?php
-        }
+        
     }
 }
 ?>
