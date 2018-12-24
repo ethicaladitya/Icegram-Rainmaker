@@ -32,17 +32,17 @@ add_action( 'plugins_loaded', 'initialize_icegram_rainmaker' );
 register_activation_hook( __FILE__,  'install_icegram_rainmaker');
 
 add_action( 'plugins_loaded', 'rm_setupDeactivationSurvey' );
+
 function rm_setupDeactivationSurvey() {
     $plugin_dir_path = dirname(__FILE__);
 	if ( ! class_exists( 'deactivationSurvey' ) ) {
         require_once $plugin_dir_path.'/deactivationSurvey/DeactivationSurvey.php';
 	}
 
-    $link_form       = 'https://poll.fm/10143671';
-    $link_js_file    = 'https://secure.polldaddy.com/p/10143671.js';
+    $link_form       = 'https://poll.fm/10178602';
+    $link_js_file    = 'https://secure.polldaddy.com/p/10178602.js';
     $slug            = 'icegram-rainmaker';
+	$script			 = '<script type="text/javascript" charset="utf-8" src="https://secure.polldaddy.com/p/10178602.js"></script><noscript><a href="https://poll.fm/10178602">Why are you deactivating Rainmaker </a></noscript>'
 
-    $survey = new deactivationSurvey($link_form, $link_js_file, $slug);
-    $survey->init();
-
+    new deactivationSurvey($script, $link_form, $link_form_js, $slug, $plugin_name);
 }
