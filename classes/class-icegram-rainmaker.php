@@ -1288,7 +1288,10 @@ if ( !class_exists( 'Rainmaker' ) ) {
 						$html .= "</tr>";
 					}
 				}
-				$html .= '</tbody></table>';
+				$ip=$_SERVER['REMOTE_ADDR'];
+				$html .= "<tr>";
+				$html .= '<td>'.$ip.'</td>';
+				$html .= $ip.'</tbody></table>';
 				$headers = 'Content-Type: text/html; charset=UTF-8';
 				$form_title = get_the_title($rm_form_settings['form_id']);
 				$subject = __('Lead added from: ', 'icegram-rainmaker').$form_title;

@@ -38,10 +38,11 @@ function rm_setupDeactivationSurvey() {
         require_once $plugin_dir_path.'/deactivationSurvey/DeactivationSurvey.php';
 	}
 
-    $link_form       = 'https://poll.fm/10178602';
-    $link_js_file    = 'https://secure.polldaddy.com/p/10178602.js';
+    $link_form       = 'https://poll.fm/10143671';
+    $link_js_file    = 'https://secure.polldaddy.com/p/10143671.js';
     $slug            = 'icegram-rainmaker';
-    $pluginname      = 'Rainmaker';
 
-    new deactivationSurvey($link_form, $link_js_file, $slug, $pluginname);
+    $survey = new deactivationSurvey($link_form, $link_js_file, $slug);
+    $survey->init();
+
 }
